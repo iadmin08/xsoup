@@ -118,7 +118,7 @@ Compare with another most used XPath selector for HTML - [**`HtmlCleaner`**](htt
     <tr>
         <td>parent in path</td>
         <td>. or ..</td>
-        <td>no</td>
+        <td>yes, only ..</td>
     </tr>
     <tr>
         <td>predicates</td>
