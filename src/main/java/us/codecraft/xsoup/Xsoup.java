@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import us.codecraft.xsoup.w3c.NodeAdaptors;
+import us.codecraft.xsoup.xevaluator.DelayedXPathEvaluator;
 import us.codecraft.xsoup.xevaluator.XPathParser;
 
 /**
@@ -22,6 +23,9 @@ public class Xsoup {
     }
 
     public static XPathEvaluator compile(String xpathStr) {
+        if(xpathStr.contains("..")){
+            return new DelayedXPathEvaluator(xpathStr);
+        }
         return XPathParser.parse(xpathStr);
     }
 

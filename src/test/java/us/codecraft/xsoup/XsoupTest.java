@@ -3,6 +3,7 @@ package us.codecraft.xsoup;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.junit.Test;
 import us.codecraft.xsoup.xevaluator.XPathParser;
 
@@ -15,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class XsoupTest {
 
-    private String html = "<html><body><div id='test'>aaa<div><a href=\"https://github.com\">github.com</a></div></div></body></html>";
+    private final String html = "<html><body><div id='test'>aaa<div><a href=\"https://github.com\">github.com</a></div></div></body></html>";
 
-    private String htmlClass = "<html><body><div class='a b c'><div><a href=\"https://github.com\">github.com</a></div></div><div>b</div></body></html>";
+    private final String htmlClass = "<html><body><div class='a b c'><div><a href=\"https://github.com\">github.com</a></div></div><div>b</div></body></html>";
 
     @Test
     public void testSelect() {
@@ -276,4 +277,20 @@ public class XsoupTest {
 
     }
 
+    @Test
+    public void testParentInPath(){
+        String html = "<html><div><a href='https://github.com'>github.com</a></div>" +
+                "<table><tr><td>a</td><td>b</td></tr></table></html>";
+
+        Document documentXML = Jsoup.parse(html, "", Parser.xmlParser());
+
+        XPathEvaluator xPathEvaluator = Xsoup.compile("//div/../..//tr/td/text()");
+        List<String> list = xPathEvaluator.evaluate(documentXML).list();
+        assertThat(list).contains("a","b");
+        assertThat(xPathEvaluator.hasAttribute()).isTrue();
+
+        xPathEvaluator = Xsoup.compile("//div/../../table/tr/td");
+        String td = xPathEvaluator.evaluate(documentXML).get();
+        assertThat(td).isEqualTo("<td>a</td>");
+    }
 }
